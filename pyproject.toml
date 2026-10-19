@@ -1,0 +1,31 @@
+[project]
+name = "mcp-dj"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Ryan Pile", email = "ryan.r.pile@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=4.1.1",
+    "httpx>=0.28.1",
+    "numpy>=2.5.4",
+    "pandas>=3.0.6",
+    "pyarrow>=26.0.0",
+    "python-dotenv>=1.2.4",
+    "rapidfuzz>=3.14.6",
+]
+
+[project.scripts]
+mcp-dj = "mcp_dj:main"
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "pytest>=9.1.1",
+]
