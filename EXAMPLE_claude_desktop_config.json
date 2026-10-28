@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "dice-roller": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\Users\\jerem\\OneDrive\\Desktop\\MCP-DJ\\src\\mcp_dj", 
+        "run",
+        "dice_server.py"
+      ]
+    },
+    "mcp-dj": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\Users\\jerem\\OneDrive\\Desktop\\MCP-DJ\\src\\mcp_dj", 
+        "run",
+        "spotify_server.py"
+      ]
+    }
+  }
+}
