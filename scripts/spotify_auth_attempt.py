@@ -58,7 +58,7 @@ state = secrets.token_urlsafe(16)
 
 """ print("State length:", len(state)) """
 
-scope = "playlist-modify-private playlist-modify-public"
+scope = "playlist-read-private playlist-modify-private playlist-modify-public"
 AUTH_URL = "https://accounts.spotify.com/authorize"
 
 authorization_params = {
