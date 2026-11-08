@@ -10,4 +10,7 @@ wheels/
 .venv
 .env
 .spotify_token.json
+
+# Data files
 data/raw/
+playlist_backups/
