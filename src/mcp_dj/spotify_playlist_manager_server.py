@@ -38,27 +38,25 @@ from spotify_auth import (
     spotify_get,
     spotify_request,
 )
-# Logs go to stderr, which keeps stdout free for the MCP protocol.
+# Logs go to stderr, MCP documentation says to handle them this way
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 mcp = FastMCP(name="Spotify Playlist Manager")
 
-# Safety limits. These are our own guards, not Spotify's (Spotify allows up to 100 items
-# per request). Adjust them if they get in the way.
+# Safety limits. These are our own guards, not Spotify's (Spotify allows up to 100 items per request).
 MAX_ITEMS_PER_CALL = 50
 MAX_NAME_LENGTH = 100
 MAX_DESCRIPTION_LENGTH = 300
 
-# Only accept full track URIs like spotify:track:4iV5W9uYEdYUVa79Axb7Rh. Requiring URIs
-# (not song names) means the model can't change a playlist by guessing.
+# Only accept full track URIs like spotify:track:4iV5W9uYEdYUVa79Axb7Rh
 TRACK_URI_PATTERN = re.compile(r"^spotify:track:[A-Za-z0-9]{22}$")
 
 # Settings for sort_playlist
 SORT_KEYS = ("title", "artist", "album", "duration", "added_at")
-MAX_SORT_ITEMS = 500  # our own cap; bigger playlists need many more API calls
+MAX_SORT_ITEMS = 500  # Our own cap, can be adjusted but may inflate api calls
 REPLACE_BATCH_SIZE = 100  # Spotify's limit per replace/add request
-BACKUP_DIR = PROJECT_ROOT / "playlist_backups"  # keep this folder out of git
+BACKUP_DIR = PROJECT_ROOT / "playlist_backups"  # Where the backups for the playlists changes are stored. Included in .gitignore
 
 # ---------------------------------------------------
 # -------------- HELPER FUNCTIONS--------------------
@@ -315,7 +313,6 @@ async def update_playlist_details(
     playlist_id: str,
     name: str | None = None,
     description: str | None = None,
-    public: bool | None = None,
 ) -> dict:
     """Change a playlist's name, description, or public/private setting. Only works
     for playlists the user owns.
@@ -330,10 +327,8 @@ async def update_playlist_details(
         body["name"] = name
     if description is not None:
         body["description"] = check_text(description, "description", MAX_DESCRIPTION_LENGTH)
-    if public is not None:
-        body["public"] = public
     if not body:
-        raise ValueError("Provide at least one of name, description, or public.")
+        raise ValueError("Provide at least of name or description.")
 
     await require_owned_playlist(playlist_id)
     await spotify_request("PUT", f"/playlists/{playlist_id}", json_body=body)
