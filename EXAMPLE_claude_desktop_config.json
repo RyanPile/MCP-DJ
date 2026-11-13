@@ -1,21 +1,30 @@
 {
   "mcpServers": {
-    "dice-roller": {
+    "spotify-song-search": {
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\Users\\jerem\\OneDrive\\Desktop\\MCP-DJ\\src\\mcp_dj", 
+        "Absolute\\File\\Path\\To\\MCP-DJ\\src\\mcp_dj",
         "run",
-        "dice_server.py"
+        "spotify_song_search_server.py"
       ]
     },
-    "mcp-dj": {
+    "spotify-playlist-search": {
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\Users\\jerem\\OneDrive\\Desktop\\MCP-DJ\\src\\mcp_dj", 
+        "Absolute\\File\\Path\\To\\MCP-DJ\\src\\mcp_dj",
         "run",
-        "spotify_server.py"
+        "spotify_playlist_search_server.py"
+      ]
+    },
+    "spotify-playlist-manager": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "Absolute\\File\\Path\\To\\MCP-DJ\\src\\mcp_dj",
+        "run",
+        "spotify_playlist_manager_server.py"
       ]
     }
   }

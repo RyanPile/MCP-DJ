@@ -1,10 +1,11 @@
 [project]
 name = "mcp-dj"
 version = "0.1.0"
-description = "Add your description here"
+description = "MCP Spotify DJ is a Model Context Protocol application that connects Claude Desktop to Spotify functionality through Python FastMCP servers. Users can make natural-language requests to search for songs, receive recommendations, as well as create, search, and modify playlists."
 readme = "README.md"
 authors = [
-    { name = "Ryan Pile", email = "ryan.r.pile@gmail.com" }
+    { name = "Ryan Pile", email = "ryan.r.pile@gmail.com" },
+    { name = "Jeremy Auradou", email = "jeremyauradou@gmail.com" }
 ]
 requires-python = ">=3.13"
 dependencies = [

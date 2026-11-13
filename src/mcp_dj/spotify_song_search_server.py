@@ -41,9 +41,9 @@ CLIENT_ID = os.environ["SPOTIFY_CLIENT_ID"]
 CLIENT_SECRET = os.environ["SPOTIFY_CLIENT_SECRET"]
 MARKET = os.environ.get("SPOTIFY_MARKET", "US")  # country whose catalog we search, default to US
 
-# The source CSV at <project root>/data/raw/.
+# The source CSV at <project root>/data/.
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATASET_PATH = PROJECT_ROOT / "data" / "raw" / "spotify-tracks-dataset-detailed.csv"
+DATASET_PATH = PROJECT_ROOT / "data" / "spotify-tracks-dataset-detailed.csv"
 
 # Audio features the recommender will use from the dataset
 DATASET_FEATURE_RANGES = {
@@ -166,7 +166,7 @@ def recommend_dataset_tracks(
         raise FileNotFoundError(
             f"Dataset CSV not found at {DATASET_PATH}. Put "
             "spotify-tracks-dataset-detailed.csv in the project's "
-            "data/raw folder"
+            "data folder"
         )
 
     # Using dict to map the target features to column names
