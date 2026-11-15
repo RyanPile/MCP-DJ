@@ -95,12 +95,15 @@ async def get_access_token() -> str:
 
 
 @mcp.tool
-async def search_songs(query: str, limit: int = 5) -> list[dict]:
+async def search_songs(query: str, limit: int = 5, allow_explicit: bool = True) -> list[dict]:
     """Search for songs on Spotify.
 
     Supports Spotify field filters inside the query, e.g.
     'track:Doxy artist:Miles Davis' or 'genre:jazz year:1955-1960'.
     limit is 1-10 (Spotify's maximum for search).
+    If allow_explicit is False, tracks Spotify marks as explicit are left out, so
+    fewer than limit results may be returned. Spotify reports explicit=False for
+    tracks whose status is unknown, so this can't guarantee clean content.
     """
     # Keep limit inside Spotify's allowed range of 1-10
     limit = max(1, min(limit, 10))
@@ -111,7 +114,7 @@ async def search_songs(query: str, limit: int = 5) -> list[dict]:
     async with httpx.AsyncClient(timeout=15) as client:
         resp = await client.get(
             SEARCH_URL,
-            params={"q": query, "type": "track", "limit": limit, "market": MARKET},
+            params={"q": query, "type": "track", "limit": limit if allow_explicit else 10, "market": MARKET}, # if allow_explicit is False, we ask for 10 just to over search, in case some songs are explicit
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -121,6 +124,11 @@ async def search_songs(query: str, limit: int = 5) -> list[dict]:
         raise RuntimeError(f"Spotify rate limit hit; retry in {retry} seconds.")
     resp.raise_for_status()
 
+    tracks = resp.json()["tracks"]["items"]
+    # One more check for explicit tracks
+    if not allow_explicit:
+        tracks = [t for t in tracks if not t.get("explicit", False)]
+
     # Keep only the fields we need so the response stays small
     return [
         {
@@ -129,10 +137,11 @@ async def search_songs(query: str, limit: int = 5) -> list[dict]:
             "album": t["album"]["name"],
             "release_date": t["album"].get("release_date"),
             "duration_ms": t["duration_ms"],
+            "explicit": t.get("explicit", False),  # lets the caller see if a track is explicit
             "uri": t["uri"],  # Spotify's ID for the track, usable in other API calls
             "url": t["external_urls"].get("spotify"),  # link to open it in Spotify
         }
-        for t in resp.json()["tracks"]["items"]
+        for t in tracks[:limit]
     ]
 
 @mcp.tool
@@ -148,6 +157,7 @@ def recommend_dataset_tracks(
     target_speechiness: float | None = None,
     target_tempo: float | None = None,
     target_loudness: float | None = None,
+    allow_explicit: bool = True,
     limit: int = 10,
 ) -> list[dict]:
     """Recommend tracks from the local Spotify dataset.
@@ -161,6 +171,9 @@ def recommend_dataset_tracks(
     dataset's popularity field. These are dataset candidates, not a live
     Spotify availability check. For the hybrid result, pair them with
     search_songs; dataset feature scores only apply to tracks in the dataset.
+
+    If allow_explicit is False, only tracks the dataset marks as not explicit
+    are returned.
     """
     if not DATASET_PATH.is_file():
         raise FileNotFoundError(
@@ -247,6 +260,9 @@ def recommend_dataset_tracks(
                 continue
             if requested_genre and row_genre.casefold() != requested_genre:
                 continue
+            explicit_value = row.get("explicit", "").strip().casefold()
+            if not allow_explicit and explicit_value != "false":
+                continue
             if track_id in seen_track_ids:
                 continue
 
@@ -287,6 +303,7 @@ def recommend_dataset_tracks(
                 "artists": artists,
                 "album_name": row.get("album_name", ""),
                 "genre": row_genre,
+                "explicit": explicit_value == "true",
                 "dataset_popularity": int(popularity),
                 "match_score": round(match_score * 100, 1) if active_targets else None,
                 "audio_features": features,

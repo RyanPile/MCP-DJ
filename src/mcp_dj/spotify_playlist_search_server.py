@@ -49,6 +49,7 @@ def format_item(entry: dict) -> dict | None:
         "artists": [a["name"] for a in item.get("artists") or []],
         "album": (item.get("album") or {}).get("name"),
         "duration_ms": item.get("duration_ms"),
+        "explicit": item.get("explicit"),
         "is_local": entry.get("is_local"),  # True for files uploaded from your computer
         "uri": item["uri"],
         "added_at": entry.get("added_at"),
