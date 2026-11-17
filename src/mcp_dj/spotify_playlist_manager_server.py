@@ -42,7 +42,17 @@ from spotify_auth import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP(name="Spotify Playlist Manager")
+mcp = FastMCP(
+    name="Spotify Playlist Manager",
+    instructions=(
+        "Creates and edits playlists in the user's own Spotify account. "
+        "To build one, call create_playlist first, then add_items_to_playlist with the "
+        "returned playlist ID and Spotify track IDs (get track IDs from the Spotify Song "
+        "Search server). Only playlists the user owns can be changed. To look at a "
+        "playlist's current contents, use the Spotify Playlists server. Use remove, "
+        "reorder, update details, or sort only when the user asks for that change."
+    ),
+)
 
 # Safety limits. These are our own guards, not Spotify's (Spotify allows up to 100 items per request).
 MAX_ITEMS_PER_CALL = 50

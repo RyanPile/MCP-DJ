@@ -33,8 +33,16 @@ from spotify_auth import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP(name="Spotify Playlists")
-
+mcp = FastMCP(
+    name="Spotify Playlist Search",
+    instructions=(
+        "Reads the user's Spotify playlists and never changes them. get_my_playlists "
+        "lists playlists. get_playlist and get_playlist_items need a playlist ID from that "
+        "list and work only for playlists the user owns. Tracks come back one page at a "
+        "time, so check for more pages before saying a playlist is complete. To change a "
+        "playlist, use the Spotify Playlist Manager server."
+    ),
+)
 # ---------------------------------------------------
 # -------------- HELPER FUNCTIONS--------------------
 # ---------------------------------------------------

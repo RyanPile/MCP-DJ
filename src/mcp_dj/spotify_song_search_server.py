@@ -61,7 +61,17 @@ DATASET_FEATURE_RANGES = {
 TOKEN_URL = "https://accounts.spotify.com/api/token"
 SEARCH_URL = "https://api.spotify.com/v1/search"
 
-mcp = FastMCP(name="Spotify Song Search")
+mcp = FastMCP(
+    name="Spotify Song Search",
+    instructions=(
+        "Finds songs by title, artist, or keywords in Spotify's public catalog "
+        "[and, if that tool exists, by mood from a local audio-feature dataset]. Results "
+        "include Spotify track IDs; pass those IDs to the Spotify Playlist Manager server "
+        "to add songs to a playlist. Each search returns at most 10 results, so refine the "
+        "query instead of expecting long lists. This server cannot see the user's playlists "
+        "or library."
+    ),
+)
 
 # Cache the access token so we don't request a new one on every search
 _token: str | None = None
